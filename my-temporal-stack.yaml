@@ -1,0 +1,85 @@
+version: "3.5"
+
+services:
+  postgresql:
+    container_name: temporal-postgresql
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_USER: temporal
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - temporal-network
+
+  temporal:
+    container_name: temporal
+    image: temporalio/auto-setup:1.22.3
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: temporal
+      POSTGRES_PWD: mypassword
+      POSTGRES_SEEDS: postgresql
+      DBNAME: temporal
+      DYNAMIC_CONFIG_FILE_PATH: /dev/null
+      SERVICES: "frontend,history,matching,worker"
+      PROMETHEUS_ENDPOINT: 0.0.0.0:8000
+    ports:
+      - "7233:7233" # gRPC
+      - "8000:8000" # Prometheus metrics
+    volumes:
+      - ./dynamicconfig:/etc/temporal/config/dynamicconfig
+    depends_on:
+      - postgresql
+    networks:
+      - temporal-network
+
+  temporal-ui:
+    container_name: temporal-ui
+    image: temporalio/ui:2.34.0
+    ports:
+      - "8080:8080"
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    depends_on:
+      - temporal
+    networks:
+      - temporal-network
+
+  # temporal-ui:
+  #   container_name: temporal-ui
+  #   depends_on:
+  #     - temporal
+  #   environment:
+  #     TEMPORAL_ADDRESS: temporal:7233
+  #     TEMPORAL_CORS_ORIGINS: "*"
+  #     TEMPORAL_CLI_ADDRESS: "*"
+  #     TEMPORAL_TLS_DISABLE: "true"
+  #   image: temporalio/ui:2.34.0
+  #   ports:
+  #     - 8080:8080
+  #   networks:
+  #     - temporal-network
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.37.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - temporal-network
+    depends_on:
+      - temporal
+
+volumes:
+  pg_data:
+
+networks:
+  temporal-network:
+    driver: bridge
+# docker-compose -f my-temporal-stack.yaml up -d

@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  temporal:
+    image: temporalio/auto-setup:1.21
+    environment:
+      - DB=postgresql
+      - ENABLE_PROMETHEUS=true
+      - PROMETHEUS_PORT=8080
+    ports:
+      - "7233:7233" # Temporal frontend
+      - "8080:8080" # Prometheus metrics
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_DB: temporal
+    ports:
+      - "5432:5432"
