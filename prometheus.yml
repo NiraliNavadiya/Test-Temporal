@@ -15,7 +15,7 @@ scrape_configs:
       - targets: ["host.docker.internal:9464"] # Node.js worker metrics
 
 remote_write:
-  - url: https://prometheus-prod-43-prod-ap-south-1.grafana.net/api/prom/push
+  - url: ""
     basic_auth:
-      username: 2376805
-      password: glc_eyJvIjoiMTQwMTEyOSIsIm4iOiJzdGFjay0xMjI2MjgzLWFsbG95LWtleWZsb3ctZ3JhZmFuYTR5NzM3IiwiayI6IjQwYVQ2MVozOVhhZjdGYjQxbzJIdmJqRCIsIm0iOnsiciI6InByb2QtYXAtc291dGgtMSJ9fQ==
+      username:
+      password:
