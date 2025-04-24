@@ -8,12 +8,12 @@ async function run() {
   });
   Runtime.install({
     logger,
-    telemetryOptions: {
-      metrics: {
-        prometheus: { bindAddress: "0.0.0.0:9464" },
-      },
-      logging: { forward: { level: "DEBUG" } },
-    },
+    // telemetryOptions: {
+    //   metrics: {
+    //     prometheus: { bindAddress: "0.0.0.0:9464" },
+    //   },
+    //   logging: { forward: { level: "DEBUG" } },
+    // },
   });
 
   const names = ["Alice", "Bob"]; // ✅ Hardcoded names

@@ -29,7 +29,7 @@ services:
       PROMETHEUS_ENDPOINT: 0.0.0.0:8000
     ports:
       - "7233:7233" # gRPC
-      - "8000:8000" # Prometheus metrics
+      - "8001:8000" # Prometheus metrics
     volumes:
       - ./dynamicconfig:/etc/temporal/config/dynamicconfig
     depends_on:
